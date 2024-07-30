@@ -18,10 +18,23 @@ func (d drv) Open(dsn string) (driver.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	socket, err := thrift.NewTSocket(cfg.Addr)
+
+	tlsCfg, err := cfg.TLSCfg.Load()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("load tls config: %w", err)
 	}
+
+	var socket thrift.TTransport
+	if tlsCfg != nil {
+		socket = thrift.NewTSSLSocketConf(
+			cfg.Addr,
+			&thrift.TConfiguration{TLSConfig: tlsCfg})
+	} else {
+		socket = thrift.NewTSocketConf(
+			cfg.Addr,
+			&thrift.TConfiguration{})
+	}
+
 	var transport thrift.TTransport
 	if cfg.Auth == "NOSASL" {
 		transport = thrift.NewTBufferedTransport(socket, 4096)
