@@ -155,9 +155,9 @@ COPY dataset/popularize_iris.sql /dataset/popularize_iris.sql
 COPY dataset/create_model_db.sql /dataset/create_model_db.sql
 
 # Install the Go compiler.
-RUN wget --quiet https://dl.google.com/go/go1.18.4.linux-amd64.tar.gz
-RUN tar -C /usr/local -xzf go1.18.4.linux-amd64.tar.gz
-RUN rm go1.18.4.linux-amd64.tar.gz
+RUN wget --quiet https://go.dev/dl/go1.21.13.linux-amd64.tar.gz \
+ && tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz \
+ && rm go1.21.13.linux-amd64.tar.gz
 RUN apt-get install -y --no-install-recommends build-essential
 ENV PATH $PATH:/usr/local/go/bin
 
